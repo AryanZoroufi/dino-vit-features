@@ -137,17 +137,16 @@ class ViTExtractor:
         model.interpolate_pos_encoding = types.MethodType(ViTExtractor._fix_pos_enc(patch_size, stride), model)
         return model
 
-    def preprocess(self, image_path: Union[str, Path],
+    def preprocess(self, pil_image: Image.Image,
                    load_size: Union[int, Tuple[int, int]] = None) -> Tuple[torch.Tensor, Image.Image]:
         """
         Preprocesses an image before extraction.
-        :param image_path: path to image to be extracted.
+        :param pil_image: path to image to be extracted.
         :param load_size: optional. Size to resize image before the rest of preprocessing.
         :return: a tuple containing:
                     (1) the preprocessed image as a tensor to insert the model of shape BxCxHxW.
                     (2) the pil image in relevant dimensions
         """
-        pil_image = Image.open(image_path).convert('RGB')
         if load_size is not None:
             pil_image = transforms.Resize(load_size, interpolation=transforms.InterpolationMode.LANCZOS)(pil_image)
         prep = transforms.Compose([
